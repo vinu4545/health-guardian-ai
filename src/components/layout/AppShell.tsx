@@ -62,10 +62,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children, navbar }) => {
             initial={{ x: side === 'right' ? '100%' : '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: side === 'right' ? '100%' : '-100%' }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.3 }}
             style={{ width }}
             className={`h-full bg-surface shadow-copilot z-20 flex flex-col relative ${side === 'right' ? 'border-l border-border' : 'border-r border-border'}`}
-            style={{ width }}
           >
             {/* Resize handle */}
             <div
