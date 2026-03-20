@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Download, AlertTriangle, CheckCircle, Shield, Activity, Pill } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const HealthReport: React.FC = () => {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const printRef = useRef<HTMLDivElement>(null);
+
   const report = {
     date: 'March 16, 2026',
     symptoms: ['Headache', 'Fever', 'Fatigue'],
@@ -24,17 +29,78 @@ const HealthReport: React.FC = () => {
 
   const riskColor = (r: string) => r === 'High' ? 'text-destructive' : r === 'Medium' ? 'text-warning' : 'text-secondary';
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setUploadedImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+
+    const canvas = await html2canvas(printRef.current, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const imgWidth = pageWidth - margin * 2;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    if (imgHeight <= pageHeight - margin * 2) {
+      pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+    } else {
+      // If content is taller than page, split into pages.
+      let position = 0;
+      let remainingHeight = imgHeight;
+
+      while (remainingHeight > 0) {
+        pdf.addImage(imgData, 'PNG', margin, -position + margin, imgWidth, imgHeight);
+        remainingHeight -= pageHeight - margin * 2;
+        position += pageHeight - margin * 2;
+        if (remainingHeight > 0) pdf.addPage();
+      }
+    }
+
+    pdf.save(`health-report-${report.date.replace(/ /g, '-')}.pdf`);
+  };
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <header>
+    <div className="space-y-8" ref={printRef}>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Health Report</h1>
           <p className="text-muted-foreground mt-1">Generated on {report.date}</p>
-        </header>
-        <button className="px-5 py-2.5 rounded-xl gradient-primary text-primary-foreground text-sm font-semibold shadow-card hover:shadow-elevated transition-shadow flex items-center gap-2">
-          <Download className="w-4 h-4" /> Download PDF
-        </button>
+        </div>
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
+          <label className="text-sm font-medium">
+            Upload image for PDF:
+            <input type="file" accept="image/*" onChange={handleFileChange} className="ml-2" />
+          </label>
+          <button
+            onClick={handleDownloadPDF}
+            className="px-5 py-2.5 rounded-xl gradient-primary text-primary-foreground text-sm font-semibold shadow-card hover:shadow-elevated transition-shadow flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" /> Download PDF
+          </button>
+        </div>
       </div>
+
+      {uploadedImage && (
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-xl bg-surface shadow-card">
+          <h2 className="text-lg font-semibold text-foreground">Uploaded Visual</h2>
+          <img src={uploadedImage} alt="Uploaded visual" className="mt-3 max-h-72 w-full object-contain rounded-lg border" />
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Symptom Summary */}

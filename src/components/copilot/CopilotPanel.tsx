@@ -146,11 +146,6 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({ onClose, onToggleSid
             transition={{ duration: 0.2 }}
             className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            {msg.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-full gradient-primary flex-shrink-0 flex items-center justify-center mt-1">
-                <Bot className="w-3.5 h-3.5 text-primary-foreground" />
-              </div>
-            )}
             <div
               className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
                 msg.role === 'user'
