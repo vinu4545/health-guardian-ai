@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Activity, Shield, Pill, FileText, ArrowRight, Bot, Heart, Brain, Zap } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 
 const features = [
   { icon: Brain, title: 'AI Symptom Analysis', desc: 'Describe symptoms and get AI-powered disease predictions with risk levels.', color: 'text-primary' },
@@ -31,10 +32,22 @@ const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar */}
-      <nav className="h-16 border-b border-border bg-surface/80 backdrop-blur-md flex items-center px-4 md:px-8 justify-between sticky top-0 z-10">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} className="h-9 w-auto" alt="MediCare Logo" />
-        </Link>
+      <nav className="h-18 border-b border-border bg-surface/80 backdrop-blur-md flex items-center px-4 md:px-8 justify-between sticky top-0 z-10">
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="flex items-center gap-2 p-1">
+              <img src={logo} className="h-12 w-auto" alt="MediCare Logo" />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="max-w-sm">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <img src={logo} className="h-36 w-auto" alt="MediCare Logo" />
+              <DialogTitle>Welcome to MediCare</DialogTitle>
+              <DialogDescription>Tap here for quick info and support on your health journey.</DialogDescription>
+            </div>
+            <DialogClose className="mt-4 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90">Close</DialogClose>
+          </DialogContent>
+        </Dialog>
         <div className="flex items-center gap-3">
           <Link to="/dashboard" className="px-5 py-2.5 rounded-xl gradient-primary text-primary-foreground text-sm font-semibold shadow-card hover:shadow-elevated transition-shadow">
             Get Started
@@ -141,7 +154,21 @@ const LandingPage: React.FC = () => {
       <footer className="border-t border-border py-8">
         <div className="max-w-6xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <img src={logo} className="h-7 w-auto" alt="MediCare" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center gap-2 p-1">
+                  <img src={logo} className="h-10 w-auto" alt="MediCare" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-sm">
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <img src={logo} className="h-36 w-auto" alt="MediCare Logo" />
+                  <DialogTitle>MediCare Footer Info</DialogTitle>
+                  <DialogDescription>Visit the app navigation to continue and get personalized health insights.</DialogDescription>
+                </div>
+                <DialogClose className="mt-4 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90">Close</DialogClose>
+              </DialogContent>
+            </Dialog>
           </div>
           <p className="text-sm text-muted-foreground">© 2026 MediCare. AI-powered health guidance. Not a substitute for professional medical advice.</p>
         </div>

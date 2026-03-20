@@ -22,14 +22,14 @@ export const Navbar: React.FC = () => {
       <Dialog>
         <DialogTrigger asChild>
           <button className="flex items-center gap-2 p-1">
-            <img src={logo} className="h-24 w-auto" alt="MediCare Logo" />
+            <img src={logo} className="h-28 w-auto" alt="MediCare Logo" />
           </button>
         </DialogTrigger>
         <DialogContent className="max-w-sm">
           <div className="flex flex-col items-center gap-2 text-center">
-            <img src={logo} className="h-32 w-auto" alt="MediCare Logo" />
-            <DialogTitle>Welcome to medicare</DialogTitle>
-            <DialogDescription>u can add any caption related to medical website</DialogDescription>
+            <img src={logo} className="h-36 w-auto" alt="MediCare Logo" />
+            <DialogTitle>Welcome to MediCare</DialogTitle>
+            <DialogDescription>Click the logo anytime for quick app info and help tips.</DialogDescription>
           </div>
           <DialogClose className="mt-4 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90">
             Close
