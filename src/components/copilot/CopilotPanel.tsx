@@ -37,6 +37,38 @@ function getAIResponse(input: string): string {
   return AI_RESPONSES.default;
 }
 
+export const streamChat = async (
+  message: string,
+  sessionId: string,
+  onChunk: (chunk: string) => void
+) => {
+  const res = await fetch('http://localhost:8000/chat/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message,
+      session_id: sessionId,
+    }),
+  });
+
+  if (!res.body) {
+    throw new Error('No response body from /chat/ stream');
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value);
+    onChunk(chunk);
+  }
+};
+
 export const CopilotPanel: React.FC<CopilotPanelProps> = ({ onClose, onToggleSide, side }) => {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
@@ -54,11 +86,31 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({ onClose, onToggleSid
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const aiMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: getAIResponse(userMsg.content) };
-      setMessages(prev => [...prev, aiMsg]);
-      setIsTyping(false);
-    }, 800 + Math.random() * 600);
+    const assistantId = `assistant-${Date.now()}`;
+    const assistantMsg: Message = { id: assistantId, role: 'assistant', content: '' };
+    setMessages(prev => [...prev, assistantMsg]);
+
+    const sessionId = 'default-session';
+
+    streamChat(userMsg.content, sessionId, chunk => {
+      setMessages(prev =>
+        prev.map(msg => (msg.id === assistantId ? { ...msg, content: msg.content + chunk } : msg))
+      );
+    })
+      .catch(error => {
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === assistantId
+              ? {
+                  ...msg,
+                  content: 'Sorry, I could not connect to the backend. Please try again.',
+                }
+              : msg
+          )
+        );
+        console.error('Copilot streamChat error:', error);
+      })
+      .finally(() => setIsTyping(false));
   };
 
   return (

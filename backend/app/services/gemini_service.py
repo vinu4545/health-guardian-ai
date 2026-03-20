@@ -14,7 +14,7 @@ def stream_gemini_response(user_input, session_id):
 
     # Streaming response
     response = client.models.generate_content_stream(
-        model="gemini-2.5-pro",
+        model="gemini-2.5-flash",
         contents=prompt
     )
 
