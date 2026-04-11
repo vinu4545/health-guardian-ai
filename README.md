@@ -149,4 +149,12 @@ Color Palette:
 
 ---
 
-# 📂 Project Structure
+#Proj structure :
+==============================================
+1) How to Run the backend(copliot) : 
+cd backend
+uvicorn app.main:app --reload
+---------
+2) How to run the Backend2(main Backend)
+cd Backend2
+uvicorn main:app --reload --port 8001
