@@ -10,34 +10,6 @@ interface Prediction {
   risk: 'Low' | 'Medium' | 'High';
 }
 
-const MOCK_PREDICTIONS: Record<string, Prediction[]> = {
-  'fever,headache': [
-    { disease: 'Viral Infection', probability: 78, risk: 'Medium' },
-    { disease: 'Influenza', probability: 65, risk: 'Medium' },
-    { disease: 'Dengue Fever', probability: 32, risk: 'High' },
-  ],
-  'cough,fever': [
-    { disease: 'Common Cold', probability: 72, risk: 'Low' },
-    { disease: 'Bronchitis', probability: 55, risk: 'Medium' },
-    { disease: 'Pneumonia', probability: 28, risk: 'High' },
-  ],
-  'chest pain,shortness of breath': [
-    { disease: 'Anxiety/Panic Attack', probability: 45, risk: 'Medium' },
-    { disease: 'Angina', probability: 38, risk: 'High' },
-    { disease: 'Cardiac Event', probability: 22, risk: 'High' },
-  ],
-  default: [
-    { disease: 'General Infection', probability: 55, risk: 'Low' },
-    { disease: 'Stress-Related Condition', probability: 42, risk: 'Low' },
-    { disease: 'Nutritional Deficiency', probability: 30, risk: 'Medium' },
-  ],
-};
-
-function getPredictions(symptoms: string[]): Prediction[] {
-  const key = symptoms.map(s => s.toLowerCase()).sort().join(',');
-  return MOCK_PREDICTIONS[key] || MOCK_PREDICTIONS.default;
-}
-
 const riskColor = (risk: string) => {
   if (risk === 'High') return 'bg-destructive/10 text-destructive';
   if (risk === 'Medium') return 'bg-warning/10 text-warning-foreground';
@@ -63,14 +35,36 @@ const SymptomAnalyzer: React.FC = () => {
     }
   };
 
-  const analyze = () => {
+  const analyze = async () => {
     if (selectedSymptoms.length === 0) return;
+
     setLoading(true);
     setResults(null);
-    setTimeout(() => {
-      setResults(getPredictions(selectedSymptoms));
-      setLoading(false);
-    }, 1200);
+
+    try {
+      const res = await fetch('http://127.0.0.1:8001/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          symptoms: selectedSymptoms,
+          age: Number(age),
+          gender,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('API failed');
+      }
+
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setLoading(false);
   };
 
   return (

@@ -1,0 +1,200 @@
+{
+  "diseases": [
+    {
+      "name": "Common Cold",
+      "category": "Infection",
+      "risk": "Low",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "cough": 3,
+        "sore throat": 4,
+        "runny nose": 5,
+        "fever": 1,
+        "fatigue": 2
+      }
+    },
+    {
+      "name": "Influenza",
+      "category": "Infection",
+      "risk": "Medium",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "fever": 5,
+        "cough": 4,
+        "body aches": 5,
+        "fatigue": 4,
+        "headache": 3
+      }
+    },
+    {
+      "name": "Pneumonia",
+      "category": "Respiratory",
+      "risk": "High",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "fever": 4,
+        "cough": 4,
+        "shortness of breath": 5,
+        "chest pain": 4,
+        "fatigue": 3
+      }
+    },
+    {
+      "name": "Bronchitis",
+      "category": "Respiratory",
+      "risk": "Medium",
+      "age_range": [10, 80],
+      "gender": "any",
+      "symptoms": {
+        "cough": 5,
+        "fatigue": 3,
+        "shortness of breath": 3,
+        "fever": 2
+      }
+    },
+    {
+      "name": "Asthma",
+      "category": "Respiratory",
+      "risk": "Medium",
+      "age_range": [5, 60],
+      "gender": "any",
+      "symptoms": {
+        "shortness of breath": 5,
+        "cough": 3,
+        "wheezing": 5,
+        "chest tightness": 4
+      }
+    },
+    {
+      "name": "Migraine",
+      "category": "Neurological",
+      "risk": "Low",
+      "age_range": [10, 60],
+      "gender": "female",
+      "symptoms": {
+        "headache": 5,
+        "nausea": 4,
+        "dizziness": 3,
+        "light sensitivity": 5
+      }
+    },
+    {
+      "name": "Tension Headache",
+      "category": "Neurological",
+      "risk": "Low",
+      "age_range": [10, 70],
+      "gender": "any",
+      "symptoms": {
+        "headache": 4,
+        "stress": 4,
+        "fatigue": 2
+      }
+    },
+    {
+      "name": "Meningitis",
+      "category": "Neurological",
+      "risk": "High",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "fever": 5,
+        "headache": 5,
+        "neck stiffness": 5,
+        "nausea": 3
+      }
+    },
+    {
+      "name": "Anxiety Disorder",
+      "category": "Psychological",
+      "risk": "Medium",
+      "age_range": [15, 50],
+      "gender": "any",
+      "symptoms": {
+        "chest pain": 2,
+        "shortness of breath": 3,
+        "dizziness": 4,
+        "fatigue": 3
+      }
+    },
+    {
+      "name": "Angina",
+      "category": "Cardiac",
+      "risk": "High",
+      "age_range": [35, 80],
+      "gender": "any",
+      "symptoms": {
+        "chest pain": 5,
+        "shortness of breath": 4,
+        "fatigue": 2,
+        "sweating": 3
+      }
+    },
+    {
+      "name": "Heart Attack",
+      "category": "Cardiac",
+      "risk": "High",
+      "age_range": [40, 90],
+      "gender": "any",
+      "symptoms": {
+        "chest pain": 5,
+        "shortness of breath": 5,
+        "sweating": 5,
+        "nausea": 4
+      }
+    },
+    {
+      "name": "Gastroenteritis",
+      "category": "Gastrointestinal",
+      "risk": "Medium",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "nausea": 5,
+        "vomiting": 5,
+        "diarrhea": 5,
+        "fever": 2,
+        "fatigue": 3
+      }
+    },
+    {
+      "name": "Food Poisoning",
+      "category": "Gastrointestinal",
+      "risk": "Medium",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "vomiting": 5,
+        "diarrhea": 5,
+        "nausea": 4,
+        "abdominal pain": 4
+      }
+    },
+    {
+      "name": "Nutritional Deficiency",
+      "category": "General",
+      "risk": "Low",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "fatigue": 5,
+        "dizziness": 4,
+        "weakness": 4
+      }
+    },
+    {
+      "name": "Dehydration",
+      "category": "General",
+      "risk": "Medium",
+      "age_range": [0, 100],
+      "gender": "any",
+      "symptoms": {
+        "dizziness": 5,
+        "fatigue": 4,
+        "dry mouth": 5
+      }
+    }
+  ]
+}
