@@ -8,7 +8,7 @@ interface Interaction {
   description: string;
 }
 
-const INTERACTION_DB: Record<string, Interaction> = {
+const RAW_INTERACTION_DB: Record<string, Interaction> = {
   'aspirin+ibuprofen': { drugs: ['Aspirin', 'Ibuprofen'], severity: 'Severe', description: 'Increased risk of gastrointestinal bleeding. Both are NSAIDs and should not be combined.' },
   'warfarin+aspirin': { drugs: ['Warfarin', 'Aspirin'], severity: 'Severe', description: 'Severe risk of internal bleeding. Aspirin enhances the anticoagulant effect of Warfarin.' },
   'lisinopril+ibuprofen': { drugs: ['Lisinopril', 'Ibuprofen'], severity: 'Moderate', description: 'NSAIDs may reduce the blood pressure-lowering effect of ACE inhibitors and increase kidney damage risk.' },
@@ -17,11 +17,27 @@ const INTERACTION_DB: Record<string, Interaction> = {
   'ssri+tramadol': { drugs: ['SSRI', 'Tramadol'], severity: 'Severe', description: 'Risk of serotonin syndrome — a potentially life-threatening condition.' },
 };
 
+const normalizeDrugName = (value: string) => value.trim().toLowerCase().replace(/[.,]/g, '');
+
+const INTERACTION_DB: Record<string, Interaction> = Object.entries(RAW_INTERACTION_DB).reduce(
+  (acc, [key, interaction]) => {
+    const normalizedKey = key
+      .split('+')
+      .map(normalizeDrugName)
+      .sort()
+      .join('+');
+
+    acc[normalizedKey] = interaction;
+    return acc;
+  },
+  {} as Record<string, Interaction>
+);
+
 function checkInteractions(drugs: string[]): Interaction[] {
   const found: Interaction[] = [];
   for (let i = 0; i < drugs.length; i++) {
     for (let j = i + 1; j < drugs.length; j++) {
-      const pair = [drugs[i].toLowerCase(), drugs[j].toLowerCase()].sort().join('+');
+      const pair = [normalizeDrugName(drugs[i]), normalizeDrugName(drugs[j])].sort().join('+');
       if (INTERACTION_DB[pair]) found.push(INTERACTION_DB[pair]);
     }
   }
@@ -41,13 +57,27 @@ const DrugChecker: React.FC = () => {
   const [results, setResults] = useState<Interaction[] | null>(null);
   const [checked, setChecked] = useState(false);
 
-  const addDrug = () => {
-    if (input.trim() && !drugs.includes(input.trim())) {
-      setDrugs(prev => [...prev, input.trim()]);
-      setInput('');
-      setResults(null);
-      setChecked(false);
-    }
+  const addDrugsFromInput = () => {
+    const entries = input
+      .split(/[,;\n]/)
+      .map(value => value.trim())
+      .filter(Boolean);
+
+    if (entries.length === 0) return;
+
+    setDrugs(prev => {
+      const next = [...prev];
+      for (const entry of entries) {
+        if (!next.includes(entry)) {
+          next.push(entry);
+        }
+      }
+      return next;
+    });
+
+    setInput('');
+    setResults(null);
+    setChecked(false);
   };
 
   const removeDrug = (d: string) => {
@@ -79,11 +109,11 @@ const DrugChecker: React.FC = () => {
           <input
             value={input}
             onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && addDrug()}
-            placeholder="e.g., Aspirin, Ibuprofen, Warfarin..."
+            onKeyDown={e => e.key === 'Enter' && addDrugsFromInput()}
+            placeholder="e.g., Aspirin, Ibuprofen or Warfarin"
             className="flex-1 px-4 py-2.5 rounded-xl bg-muted text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground"
           />
-          <button onClick={addDrug} className="px-4 py-2.5 rounded-xl gradient-primary text-primary-foreground text-sm font-medium flex items-center gap-1">
+          <button onClick={addDrugsFromInput} className="px-4 py-2.5 rounded-xl gradient-primary text-primary-foreground text-sm font-medium flex items-center gap-1">
             <Plus className="w-4 h-4" /> Add
           </button>
         </div>
